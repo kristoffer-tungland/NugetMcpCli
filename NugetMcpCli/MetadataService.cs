@@ -1,14 +1,30 @@
 using System.Reflection;
 using System.Xml.Linq;
+using System.IO;
 
 public record SearchResult(string Name, string Kind);
 public record MemberDetail(string Signature, string XmlDocumentation);
 
+public interface IFileSystem
+{
+    bool DirectoryExists(string path);
+    string[] GetFiles(string path, string searchPattern);
+    bool FileExists(string path);
+}
+
+public class RealFileSystem : IFileSystem
+{
+    public bool DirectoryExists(string path) => Directory.Exists(path);
+    public string[] GetFiles(string path, string searchPattern) => Directory.GetFiles(path, searchPattern);
+    public bool FileExists(string path) => File.Exists(path);
+}
+
 public static class MetadataService
 {
-    public static IEnumerable<SearchResult> Search(string pkg, string ver, string framework, string query)
+    public static IEnumerable<SearchResult> Search(string pkg, string ver, string framework, string query, string? packagesRoot = null, IFileSystem? fileSystem = null)
     {
-        var (asm, docs) = LoadPackage(pkg, ver, framework);
+        fileSystem ??= new RealFileSystem();
+        var (asm, docs) = LoadPackage(pkg, ver, framework, packagesRoot, fileSystem);
         if (asm == null)
             return Enumerable.Empty<SearchResult>();
         var results = new List<SearchResult>();
@@ -25,9 +41,10 @@ public static class MetadataService
         return results;
     }
 
-    public static MemberDetail? GetMemberDetails(string pkg, string ver, string framework, string memberName)
+    public static MemberDetail? GetMemberDetails(string pkg, string ver, string framework, string memberName, string? packagesRoot = null, IFileSystem? fileSystem = null)
     {
-        var (asm, docs) = LoadPackage(pkg, ver, framework);
+        fileSystem ??= new RealFileSystem();
+        var (asm, docs) = LoadPackage(pkg, ver, framework, packagesRoot, fileSystem);
         if (asm == null)
             return null;
         var lastDot = memberName.LastIndexOf('.');
@@ -48,20 +65,19 @@ public static class MetadataService
         return new MemberDetail(signature ?? string.Empty, xml);
     }
 
-    static (Assembly? asm, XDocument? xml) LoadPackage(string pkg, string ver, string framework)
+    static (Assembly? asm, XDocument? xml) LoadPackage(string pkg, string ver, string framework, string? packagesRoot, IFileSystem fs)
     {
-        var basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages", pkg.ToLower(), ver, "lib", framework);
-        if (!Directory.Exists(basePath))
+        var root = packagesRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
+        var basePath = Path.Combine(root, pkg.ToLower(), ver, "lib", framework);
+        if (!fs.DirectoryExists(basePath))
             return (null, null);
-        var dll = Directory.GetFiles(basePath, "*.dll").FirstOrDefault();
+        var dll = fs.GetFiles(basePath, "*.dll").FirstOrDefault();
         if (dll == null)
             return (null, null);
         var xmlPath = Path.ChangeExtension(dll, ".xml");
-        var resolver = new PathAssemblyResolver(new[] { dll, typeof(object).Assembly.Location });
-        var mlc = new MetadataLoadContext(resolver);
-        var asm = mlc.LoadFromAssemblyPath(dll);
+        var asm = Assembly.LoadFrom(dll);
         XDocument? xml = null;
-        if (File.Exists(xmlPath))
+        if (fs.FileExists(xmlPath))
             xml = XDocument.Load(xmlPath);
         return (asm, xml);
     }
