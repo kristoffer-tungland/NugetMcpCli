@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPackage", "TestPackage\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetMcpCli.Tests", "NugetMcpCli.Tests\NugetMcpCli.Tests.csproj", "{D9618D20-86CD-4512-80BE-31EA136BA170}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitAddin", "RevitAddin\RevitAddin.csproj", "{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{D9618D20-86CD-4512-80BE-31EA136BA170}.Release|x64.Build.0 = Release|Any CPU
 		{D9618D20-86CD-4512-80BE-31EA136BA170}.Release|x86.ActiveCfg = Release|Any CPU
 		{D9618D20-86CD-4512-80BE-31EA136BA170}.Release|x86.Build.0 = Release|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Debug|x64.Build.0 = Debug|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Debug|x86.Build.0 = Debug|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Release|x64.ActiveCfg = Release|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Release|x64.Build.0 = Release|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Release|x86.ActiveCfg = Release|Any CPU
+		{D8E0FFCB-080C-497C-A7C3-09CB45E03E4D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
